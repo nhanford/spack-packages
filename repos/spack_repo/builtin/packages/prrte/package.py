@@ -97,7 +97,9 @@ class Prrte(AutotoolsPackage):
 
         for dep in ["libevent", "hwloc", "pmix"]:
             prefix = spec[dep].prefix
-            config_args.append(f"--with-{dep}" if is_system_path(prefix) else f"--with-{dep}={prefix}")
+            config_args.append(
+                f"--with-{dep}" if is_system_path(prefix) else f"--with-{dep}={prefix}"
+            )
 
         # schedulers
         # see prte_check_X.m4 files in
