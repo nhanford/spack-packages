@@ -1046,48 +1046,56 @@ with '-Wl,-commons,use_dylibs' and without
     def with_or_without_psm2(self, activated):
         if not activated:
             return "--without-psm2"
-        return "--with-psm2={0}".format(self.spec["opa-psm2"].prefix)
+        dep_prefix = self.spec["opa-psm2"].prefix
+        return "--with-psm2" if is_system_path(dep_prefix) else f"--with-psm2={dep_prefix}"
 
     def with_or_without_verbs(self, activated):
         # Up through version 1.6, this option was named --with-openib.
         # In version 1.7, it was renamed to be --with-verbs.
         opt = "verbs" if self.spec.satisfies("@1.7:") else "openib"
         if not activated:
-            return "--without-{0}".format(opt)
-        return "--with-{0}={1}".format(opt, self.spec["rdma-core"].prefix)
+            return f"--without-{opt}"
+        dep_prefix = self.spec["rdma-core"].prefix
+        return f"--with-{opt}" if is_system_path(dep_prefix) else f"--with-{opt}={dep_prefix}"
 
     def with_or_without_mxm(self, activated):
         if not activated:
             return "--without-mxm"
-        return "--with-mxm={0}".format(self.spec["mxm"].prefix)
+        dep_prefix = self.spec["mxm"].prefix
+        return "--with-mxm" if is_system_path(dep_prefix) else f"--with-mxm={dep_prefix}"
 
     def with_or_without_ucx(self, activated):
         if not activated:
             return "--without-ucx"
-        return "--with-ucx={0}".format(self.spec["ucx"].prefix)
+        dep_prefix = self.spec["ucx"].prefix
+        return "--with-ucx" if is_system_path(dep_prefix) else f"--with-ucx={dep_prefix}"
 
     def with_or_without_ofi(self, activated):
         # Up through version 3.0.3 this option was name --with-libfabric.
         # In version 3.0.4, the old name was deprecated in favor of --with-ofi.
         opt = "ofi" if self.spec.satisfies("@3.0.4:") else "libfabric"
         if not activated:
-            return "--without-{0}".format(opt)
-        return "--with-{0}={1}".format(opt, self.spec["libfabric"].prefix)
+            return f"--without-{opt}"
+        dep_prefix = self.spec["libfabric"].prefix
+        return f"--with-{opt}" if is_system_path(dep_prefix) else f"--with-{opt}={dep_prefix}"
 
     def with_or_without_fca(self, activated):
         if not activated:
             return "--without-fca"
-        return f"--with-fca={self.spec['fca'].prefix}"
+        dep_prefix = self.spec["fca"].prefix
+        return "--with-fca" if is_system_path(dep_prefix) else f"--with-fca={dep_prefix}"
 
     def with_or_without_hcoll(self, activated):
         if not activated:
             return "--without-hcoll"
-        return f"--with-hcoll={self.spec['hcoll'].prefix}"
+        dep_prefix = self.spec["hcoll"].prefix
+        return "--with-hcoll" if is_system_path(dep_prefix) else f"--with-hcoll={dep_prefix}"
 
     def with_or_without_ucc(self, activated):
         if not activated:
             return "--without-ucc"
-        return f"--with-ucc={self.spec['ucc'].prefix}"
+        dep_prefix = self.spec["ucc"].prefix
+        return "--with-ucc" if is_system_path(dep_prefix) else f"--with-ucc={dep_prefix}"
 
     def with_or_without_xpmem(self, activated):
         s1 = "xpmem"
@@ -1095,22 +1103,26 @@ with '-Wl,-commons,use_dylibs' and without
             s1 = "cray-xpmem"
         if not activated:
             return f"--without-{s1}"
-        return f"--with-{s1}={self.spec['xpmem'].prefix}"
+        dep_prefix = self.spec["xpmem"].prefix
+        return f"--with-{s1}" if is_system_path(dep_prefix) else f"--with-{s1}={dep_prefix}"
 
     def with_or_without_knem(self, activated):
         if not activated:
             return "--without-knem"
-        return f"--with-knem={self.spec['knem'].prefix}"
+        dep_prefix = self.spec["knem"].prefix
+        return "--with-knem" if is_system_path(dep_prefix) else f"--with-knem={dep_prefix}"
 
     def with_or_without_lsf(self, activated):
         if not activated:
             return "--without-lsf"
-        return f"--with-lsf={self.spec['lsf'].prefix}"
+        dep_prefix = self.spec["lsf"].prefix
+        return "--with-lsf" if is_system_path(dep_prefix) else f"--with-lsf={dep_prefix}"
 
     def with_or_without_tm(self, activated):
         if not activated:
             return "--without-tm"
-        return f"--with-tm={self.spec['pbs'].prefix}"
+        dep_prefix = self.spec["pbs"].prefix
+        return "--with-tm" if is_system_path(dep_prefix) else f"--with-tm={dep_prefix}"
 
     @when("@main")
     def autoreconf(self, spec, prefix):
@@ -1194,7 +1206,10 @@ with '-Wl,-commons,use_dylibs' and without
         if spec.satisfies("+internal-libevent"):
             config_args.append("--with-libevent=internal")
         elif "^libevent" in spec:
-            config_args.append("--with-libevent={0}".format(spec["libevent"].prefix))
+            dep_prefix = spec["libevent"].prefix
+            config_args.append(
+                "--with-libevent" if is_system_path(dep_prefix) else f"--with-libevent={dep_prefix}"
+                )
 
         # PMIx/PRRTE support
         if spec.satisfies("+internal-pmix"):
@@ -1202,18 +1217,30 @@ with '-Wl,-commons,use_dylibs' and without
             config_args.append("--with-prrte=internal")
         else:
             if "^pmix" in spec:
-                config_args.append("--with-pmix={0}".format(spec["pmix"].prefix))
+                dep_prefix = spec["pmix"].prefix
+                config_args.append(
+                    "--with-pmix" if is_system_path(dep_prefix) else f"--with-pmix={dep_prefix}"
+                    )
             if "^prrte" in spec:
-                config_args.append("--with-prrte={0}".format(spec["prrte"].prefix))
+                dep_prefix = spec["prrte"].prefix
+                config_args.append(
+                    "--with-prrte" if is_system_path(dep_prefix) else f"--with-prrte={dep_prefix}"
+                )
 
         if "^zlib-api" in spec:
-            config_args.append("--with-zlib={0}".format(spec["zlib-api"].prefix))
+            dep_prefix = spec["zlib-api"].prefix
+            config_args.append(
+                "--with-zlib" if is_system_path(dep_prefix) else f"--with-zlib={dep_prefix}"
+                )
 
         # Hwloc support
         if spec.satisfies("+internal-hwloc"):
             config_args.append("--with-hwloc=internal")
         elif "^hwloc" in spec:
-            config_args.append("--with-hwloc=" + spec["hwloc"].prefix)
+            dep_prefix = spec["hwloc"].prefix
+            config_args.append(
+                "--with-hwloc" if is_system_path(dep_prefix) else f"--with-hwloc={dep_prefix}"
+                )
 
         # Java support
         if "+java" in spec:
