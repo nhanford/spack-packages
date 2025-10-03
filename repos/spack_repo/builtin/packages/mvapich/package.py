@@ -166,10 +166,11 @@ class Mvapich(MpichEnvironmentModifications, AutotoolsPackage):
         # See: http://slurm.schedmd.com/mpi_guide.html#mvapich2
         if "process_managers=slurm" in spec:
             opts = [
-                "--with-pm=slurm",
                 "--with-slurm={0}".format(spec["slurm"].prefix),
                 "CFLAGS=-I{0}/include/slurm".format(spec["slurm"].prefix),
             ]
+            if spec.satisfies("@:3"):
+                opts.append("--with-pm=slurm")
         if "none" in spec.variants["process_managers"].value:
             opts = ["--with-pm=none"]
 
