@@ -48,7 +48,6 @@ class Phloem(CachedCMakePackage, CudaPackage, ROCmPackage):
     depends_on("cxx", type="build")
 
     def initconfig_mpi_entries(self):
-        spec = self.spec
         entries = super().initconfig_mpi_entries()
         entries.append(cmake_cache_option("ENABLE_MPI", True))
         entries.append(cmake_cache_path("MPI_HOME", self.spec["mpi"].prefix))
