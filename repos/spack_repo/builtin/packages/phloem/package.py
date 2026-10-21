@@ -10,7 +10,7 @@ from spack_repo.builtin.build_systems.cached_cmake import (
 from spack_repo.builtin.build_systems.cuda import CudaPackage
 from spack_repo.builtin.build_systems.rocm import ROCmPackage
 
-from spack.package import depends_on, license, maintainers, variant, version, when
+from spack.package import *
 
 
 class Phloem(CachedCMakePackage, CudaPackage, ROCmPackage):
