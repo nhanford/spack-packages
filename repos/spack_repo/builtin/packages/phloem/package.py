@@ -17,8 +17,8 @@ class Phloem(CachedCMakePackage, CudaPackage, ROCmPackage):
     """A suite of MPI benchmarks with Umpire memory allocation."""
 
     homepage = "https://github.com/LLNL/phloem"
-    git = "https://github.com/LLNL/phloem/phloem.git"
-    url = "https://github.com/llnl/phloem/releases/download/v2.0.0/phloem-v2.0.0.tar.gz"
+    git = "https://github.com/LLNL/phloem.git"
+    url = "https://github.com/LLNL/phloem/releases/download/v2.0.0/phloem-v2.0.0.tar.gz"
 
     maintainers("nhanford")
 
